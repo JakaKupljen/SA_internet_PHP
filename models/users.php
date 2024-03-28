@@ -86,4 +86,80 @@ class User
             return false;
         } 
     }
+    public function mojprofil(){
+        if(!isset($_SESSION["USER_ID"])){
+            header("Location: /pages/error");
+            die();
+        }
+        
+        $db = Db::getInstance();
+        $id = $_SESSION["USER_ID"];
+        $query1 = "SELECT * FROM users WHERE id=?";
+        $query2 = "SELECT COUNT(*) AS article_count FROM articles WHERE user_id=?";
+        
+        $statement1 = $db->prepare($query1);
+        
+        if (!$statement1) {
+            return "Error preparing statement 1";
+        }
+        $statement1->bind_param("i", $id); 
+        if (!$statement1->execute()) {
+            return "Error executing statement 1";
+        }
+        $result1 = $statement1->get_result();
+        $profileData = $result1->fetch_assoc();
+        $statement1->close();
+        
+        $statement2 = $db->prepare($query2); 
+        if (!$statement2) {
+            return "Error preparing statement 2";
+        }
+        $statement2->bind_param("i", $id);  
+        if (!$statement2->execute()) {
+            return "Error executing statement 2";
+        } 
+        $result2 = $statement2->get_result();
+
+        $userDetails = $result2->fetch_assoc();
+        
+        $statement2->close();
+        $combinedData = array_merge($profileData, $userDetails);
+        return $combinedData;
+    }
+
+    public function publisherprofil($userId) {
+        $db = Db::getInstance();
+        $query1 = "SELECT * FROM users WHERE id=?";
+        $query2 = "SELECT COUNT(*) AS article_count FROM articles WHERE user_id=?";
+    
+        $statement1 = $db->prepare($query1);
+        if (!$statement1) {
+            return "Error preparing statement 1";
+        }
+    
+        $statement1->bind_param("i", $userId); 
+        if (!$statement1->execute()) {
+            return "Error executing statement 1";
+        }
+    
+        $result1 = $statement1->get_result();
+        $profileData = $result1->fetch_assoc();
+        $statement1->close();
+    
+        $statement2 = $db->prepare($query2);
+        if (!$statement2) {
+            return "Error preparing statement 2";
+        }
+        $statement2->bind_param("i", $userId); 
+        if (!$statement2->execute()) {
+            return "Error executing statement 2";
+        }
+        $result2 = $statement2->get_result();
+
+        $userDetails = $result2->fetch_assoc();
+    
+        $statement2->close();
+        $combinedData = array_merge($profileData, $userDetails);
+        return $combinedData;
+    }
 }

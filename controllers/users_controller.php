@@ -87,4 +87,37 @@ class users_controller
         }
         die();
     }
+    function mojprofil(){
+        if(!isset($_SESSION["USER_ID"])){
+            header("Location: /pages/error");
+            die();
+        }
+        $user = User::find($_SESSION["USER_ID"]);
+        $profileData = $user->mojprofil();
+
+        $username = $profileData['username'];
+        $email = $profileData['email'];
+
+        $nmbrofposts = $profileData['article_count'];
+
+        include ('views/users/mojprofil.php');
+    }
+
+    function publisherprofil() {
+    
+        $userId = $_GET['id']; 
+        $user = User::find($userId);
+    
+        if (!$user) {
+            header("Location: /pages/error");
+            die();
+        }
+        
+        $profileData = $user->publisherprofil($userId);
+        $username = $profileData['username'];
+        $email = $profileData['email'];
+        $nmbrofposts = $profileData['article_count'];
+        
+        include ('views/users/publisherprofile.php');
+    }
 }
