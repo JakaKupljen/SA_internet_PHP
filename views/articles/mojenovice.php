@@ -9,6 +9,7 @@
             <p>Objavil: <?php echo $article->user->username; ?>, <?php echo date_format(date_create($article->date), 'd. m. Y \ob H:i:s'); ?></p>
             <a href="/articles/edit?id=<?php echo $article->id;?>"><button>Uredi</button></a>
             <a href="/articles/show_nazaj?id=<?php echo $article->id;?>"><button>Preberi več</button></a>
+            <a href="/articles/delete?id=<?php echo $article->id;?>"><button>Zbriši</button></a>
         </div>
         <?php
     }

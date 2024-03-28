@@ -97,4 +97,16 @@ class Article
             return false;
         } 
     }
+
+    public function delete() {
+        $db = Db::getInstance();
+        $id = $this->id;
+        $query = "DELETE FROM articles WHERE id=$id LIMIT 1;";
+        if($db->query($query)){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
 }

@@ -61,7 +61,7 @@ class articles_controller
         }
         require_once('views/articles/edit.php');
     }
-    
+
     public function mojenovice()
     {
         //s pomočjo statične metode modela, dobimo seznam vseh novic
@@ -122,5 +122,14 @@ class articles_controller
             header("Location: /articles/create?error=4"); 
         }
         die();
+    }
+
+    function delete(){
+        if (!isset($_GET['id'])) {
+            return call('pages', 'error'); //če ne, kličemo akcijo napaka na kontrolerju stran
+        }
+        $article = Article::find($_GET['id']);
+        $article->delete($_GET['id']);
+        header("Location: /"); 
     }
 }
