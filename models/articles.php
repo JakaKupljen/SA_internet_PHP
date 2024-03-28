@@ -42,6 +42,19 @@ class Article
         }
         return $articles;
     }
+    
+    public static function all_users_articles($user_id)
+    {
+        $db = Db::getInstance(); // pridobimo instanco baze
+        $query = "SELECT * FROM articles WHERE user_id= $user_id;"; // pripravimo query
+        $res = $db->query($query); // poženemo query
+        $articles = array();
+        while ($article = $res->fetch_object()) {
+            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $articles
+            array_push($articles, new Article($article->id, $article->title, $article->abstract, $article->text, $article->date, $article->user_id));
+        }
+        return $articles;
+    }
 
     // Metoda, ki vrne eno novico z določenim id-jem iz baze
     public static function find($id)
