@@ -25,15 +25,15 @@ function call($controller, $action)
 // definiramo tudi pravice (ustrezno zmanjšamo nabor akcij pod določenimi pogoji)
 $controllers = array(
   'pages' => ['error'],
-  'users' => ['create', 'store'],
+  'users' => ['create', 'store', 'mojprofil','publisherprofil'],
   'auth' => ['login', 'authenticate'],
-  'articles' => ['index', 'show']
+  'articles' => ['index', 'show','create','edit','store','mojenovice','show_nazaj','publisherprofil']
 );
 // Če je prijavljen, mu dovolimo še urejanje profila, odjavo in objavo novic
 if(isset($_SESSION["USER_ID"])){
-  $controllers['users'] = array_merge($controllers['users'], ['edit', 'update']);
+  $controllers['users'] = array_merge($controllers['users'], ['edit', 'update','publisherprofil']);
   $controllers['auth'] = array_merge($controllers['auth'], ['logout']);
-  $controllers['articles'] = array_merge($controllers['articles'], ['create']); // TODO: 'list', 'store', 'edit', 'update', 'delete'
+  $controllers['articles'] = array_merge($controllers['articles'], ['create','edit','update','store','list', 'delete','publisherprofil']); // TODO: 'list', 'store', 'edit', 'update', 'delete'
 }
 
 // Preverimo, če zahteva kliče controller in akcijo iz zgornjega seznama
