@@ -42,7 +42,7 @@ class Article
         }
         return $articles;
     }
-    
+
     public static function all_users_articles($user_id)
     {
         $db = Db::getInstance(); // pridobimo instanco baze
@@ -67,6 +67,21 @@ class Article
             return new Article($article->id, $article->title, $article->abstract, $article->text, $article->date, $article->user_id);
         }
         return null;
+    }
+
+    public function update($title, $abstract, $text){
+        $db = Db::getInstance();
+        $title = mysqli_real_escape_string($db, $title);
+        $abstract = mysqli_real_escape_string($db, $abstract);
+        $text = mysqli_real_escape_string($db, $text);
+        $id = $this->id;
+        $query = "UPDATE articles SET title='$title', abstract='$abstract' , text='$text' WHERE id=$id LIMIT 1;";
+        if($db->query($query)){
+            return true;
+        }
+        else{
+            return false;
+        } 
     }
 
     public static function create($title, $abstract, $text, $user_id){
