@@ -73,18 +73,32 @@ class User
     }
 
     // Metoda, ki posodobi uporabniko ime in e-mail od trenutnega uporabnika v bazi
-    public function update($username, $email){
+     public function update($old, $new){
         $db = Db::getInstance();
-        $username = mysqli_real_escape_string($db, $username);
-        $email = mysqli_real_escape_string($db, $email);
+        $old = mysqli_real_escape_string($db, $old);
+        $new = mysqli_real_escape_string($db, $new);
         $id = $this->id;
-        $query = "UPDATE users SET username='$username', email='$email' WHERE id=$id LIMIT 1;";
-        if($db->query($query)){
-            return true;
+    
+        $query = "SELECT password FROM users WHERE id=$id LIMIT 1";
+        $result = $db->query($query);
+        if (!$result || $result->num_rows != 1) {
+            return false; 
         }
-        else{
-            return false;
-        } 
+        $row = $result->fetch_assoc();
+        $storedPassword = $row['password'];
+    
+        if (!password_verify($old, $storedPassword)) {
+            return false; 
+        }
+    
+        $hashedNewPassword = password_hash($new, PASSWORD_DEFAULT);
+    
+        $updateQuery = "UPDATE users SET password='$hashedNewPassword' WHERE id=$id LIMIT 1";
+        if ($db->query($updateQuery)) {
+            return true; 
+        } else {
+            return false; 
+        }
     }
     public function mojprofil(){
         if(!isset($_SESSION["USER_ID"])){
@@ -126,6 +140,7 @@ class User
         $combinedData = array_merge($profileData, $userDetails);
         return $combinedData;
     }
+    
 
     public function publisherprofil($userId) {
         $db = Db::getInstance();

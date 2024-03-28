@@ -46,21 +46,38 @@ class users_controller
         die();
     }
 
-    function edit(){
-        if(!isset($_SESSION["USER_ID"])){
+    public function edit() {
+        if (!isset($_SESSION["USER_ID"])) {
             header("Location: /pages/error");
             die();
         }
         $user = User::find($_SESSION["USER_ID"]);
         $error = "";
-        if(isset($_GET["error"])){
-            switch($_GET["error"]){
-                case 1: $error = "Izpolnite vse podatke"; break;
-                case 2: $error = "Uporabniško ime je že zasedeno."; break;
-                default: $error = "Prišlo je do napake med urejanjem uporabnika.";
+    
+        if (isset($_POST["register"])) {
+            // Retrieve form data
+            $oldPassword = $_POST["old_password"];
+            $newPassword = $_POST["password"];
+            $repeatPassword = $_POST["repeat_password"];
+    
+            if ($newPassword !== $repeatPassword) {
+                $error = "New password and repeat password do not match";
+            } else {
+                $passwordChanged = $user->update($oldPassword, $newPassword);
+    
+                if ($passwordChanged) {
+                    session_unset();
+                    session_destroy();
+                    header("Location: /");
+                    exit(); 
+                } else {
+                    $error = "Old password is incorrect";
+                }
             }
         }
-        require_once('views/users/edit.php');
+    
+        // Load view with the form
+        include('views/users/edit.php');
     }
 
     function update(){
